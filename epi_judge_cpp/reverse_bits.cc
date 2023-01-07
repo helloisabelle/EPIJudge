@@ -15,6 +15,13 @@ unsigned long long ReverseBits(unsigned long long x) {
 
   // Do look up table for faster compute. O(n/L). L = len n = partition size
 
+//  const int mask_size = 16;
+//  const int bit_mask = 0xFFFF;
+//  // isolate lowest 16 bit then shift to 64 index
+//  return look_up[x & bit_mask] << (3 * mask_size) |
+//  look_up[(x >> mask_size) & bit_mask] << (2 * mask_size) |
+//  look_up[(x >> (mask_size * 2)) & bit_mask] << mask_size |
+//  look_up[(x >> (mask_size * 3)) & bit_mask]
 
 
   return ans;
