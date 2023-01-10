@@ -5,7 +5,7 @@ long long SwapBits(long long x, int i, int j) {
   if (((x >> i) & 1) != ((x >> j) & 1)) {
     // 1L = 1 long long
     unsigned long long bit_mask = (1LL << i) | (1LL << j);
-        x ^= bit_mask;
+    x ^= bit_mask;
   }
 
   return x;
