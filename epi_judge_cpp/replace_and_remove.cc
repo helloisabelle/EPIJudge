@@ -1,6 +1,8 @@
 #include <iterator>
 #include <string>
 #include <vector>
+#include <iostream>
+#include <algorithm>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/timed_executor.h"
@@ -8,8 +10,51 @@ using std::string;
 using std::vector;
 
 int ReplaceAndRemove(int size, char s[]) {
-  // TODO - you fill in here.
-  return 0;
+  int ans = 0;
+  int count = 0;
+  int write_index = 0;
+  for (int i = 0; i < size; i++) {
+    if (s[i] != 'b') s[write_index++] = s[i];
+    if (s[i] == 'a') count++;
+  }
+
+  int x = write_index + count - 1;
+  ans = x + 1;
+  write_index--;
+  while (write_index >= 0) {
+    if (s[write_index] == 'a') {
+      s[x--] = 'd';
+      s[x--] = 'd';
+    } else s[x--] = s[write_index];
+    write_index--;
+  }
+
+//
+//  while (i < size) {
+//    if (s[i] == 'b') {
+//      for (int j = i; j < size - 1; ++j) {
+//          s[j] = s[j + 1];
+//      }
+//      size--;
+//    } else i++;
+//  }
+//
+//  int x = 0;
+//  while (x < size) {
+//    if (s[x] == 'a') {
+//      s[x] = 'd';
+//      char save = s[x + 1];
+//      s[x + 1] = 'd';
+//      for (int j = x + 2; j < size + 1; ++j) {
+//           char prev = s[j];
+//           s[j] = save;
+//           save = prev;
+//      }
+//      size++;
+//    } else x++;
+//  }
+
+  return ans;
 }
 vector<string> ReplaceAndRemoveWrapper(TimedExecutor& executor, int size,
                                        const vector<string>& s) {
