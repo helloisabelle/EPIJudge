@@ -1,4 +1,5 @@
 #include <memory>
+#include <unordered_map>
 
 #include "list_node.h"
 #include "test_framework/generic_test.h"
@@ -7,7 +8,42 @@
 using std::shared_ptr;
 
 shared_ptr<ListNode<int>> HasCycle(const shared_ptr<ListNode<int>>& head) {
-  // TODO - you fill in here.
+//  shared_ptr<ListNode<int>> curr = head;
+//  std::unordered_map<shared_ptr<ListNode<int>>, bool> set;
+//  while (curr != nullptr) {
+//    if (set.find(curr) != set.end()) return curr;
+//    else set[curr] = true;
+//    curr = curr->next;
+//  }
+  shared_ptr<ListNode<int>> fast, slow, copy;
+  fast = head;
+  slow = head;
+  copy = head;
+
+  while (fast && fast->next) {
+    slow = slow->next;
+    fast = fast->next->next;
+
+    if (fast == slow) {
+      int cycle = 1;
+      fast = fast->next;
+      while (fast != slow) {
+        fast = fast->next;
+        cycle++;
+      }
+
+      shared_ptr<ListNode<int>> it = head;
+
+      while (cycle--) it = it->next;
+
+      while (copy != it) {
+        it = it->next;
+        copy = copy->next;
+      }
+      return it;
+    }
+  }
+
   return nullptr;
 }
 void HasCycleWrapper(TimedExecutor& executor,
