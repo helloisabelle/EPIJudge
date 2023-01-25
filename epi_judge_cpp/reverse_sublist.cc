@@ -26,9 +26,13 @@ shared_ptr<ListNode<int>> ReverseSublist(shared_ptr<ListNode<int>> L, int start,
 
   while (start++ < finish) {
     auto curr = p->next;
+    //6
     p->next = curr->next;
-    curr->next = before_s->next;
+    //5->next == 7
+    curr->next = before_s->next; // setting curr ->next to item in prev loop
+    //6-> 5(4->next)
     before_s->next = curr;
+    // 4->next = 6
   }
 
   return dummy_head->next;

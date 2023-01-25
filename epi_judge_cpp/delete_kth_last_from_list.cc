@@ -1,4 +1,5 @@
 #include <memory>
+#include <iostream>
 
 #include "list_node.h"
 #include "test_framework/generic_test.h"
@@ -7,8 +8,21 @@ using std::shared_ptr;
 // Assumes L has at least k nodes, deletes the k-th last node in L.
 shared_ptr<ListNode<int>> RemoveKthLast(const shared_ptr<ListNode<int>>& L,
                                         int k) {
-  // TODO - you fill in here.
-  return nullptr;
+  auto dummy_head = make_shared<ListNode<int>>(0, L);
+  shared_ptr<ListNode<int>> k_it, it, prev;
+  it = dummy_head;
+  k_it = L;
+
+  while (k--) k_it = k_it->next;
+
+  while (k_it != nullptr) {
+    it = it->next;
+    k_it = k_it->next;
+  }
+
+  it->next = it->next->next;
+
+  return dummy_head->next;
 }
 
 int main(int argc, char* argv[]) {

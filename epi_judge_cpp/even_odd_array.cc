@@ -24,7 +24,7 @@ void EvenOdd(vector<int>* A_ptr) {
   int first_odd = -1;
 
   for (int i = 0; i < v.size(); i++) {
-    if (first_odd == -1 && (v[i] & 1)  != 0)
+    if (first_odd == -1 && (v[i] & 1) != 0) // odd
         first_odd = i;
     else if (first_odd != -1 && (v[i] & 1) == 0)
         std::swap(v[first_odd++], v[i]);

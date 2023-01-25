@@ -2,7 +2,28 @@
 #include "test_framework/generic_test.h"
 
 bool IsLinkedListAPalindrome(shared_ptr<ListNode<int>> L) {
-  // TODO - you fill in here.
+  auto fast = L, slow = L;
+  shared_ptr<ListNode<int>> prev = nullptr;
+
+  while (fast && fast->next) {
+    fast = fast->next->next;
+    slow = slow->next;
+  }
+
+  while (slow) {
+    auto save = slow->next;
+    slow->next = prev;
+    prev = slow;
+    if (save == nullptr) break;
+    slow = save;
+  }
+
+  while (slow) {
+    if (L->data != slow->data) return false;
+    L = L->next;
+    slow = slow->next;
+  }
+
   return true;
 }
 
