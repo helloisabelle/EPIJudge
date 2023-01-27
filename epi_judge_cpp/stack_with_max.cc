@@ -1,4 +1,6 @@
 #include <stdexcept>
+#include <stack>
+#include <climits>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/serialization_traits.h"
@@ -6,22 +8,31 @@
 using std::length_error;
 
 class Stack {
+ private:
+  std::stack<int> s, s2;
+
  public:
   bool Empty() const {
-    // TODO - you fill in here.
-    return true;
+    return s.empty();
   }
   int Max() const {
-    // TODO - you fill in here.
+    if (!s2.empty()) return s2.top();
     return 0;
   }
   int Pop() {
-    // TODO - you fill in here.
+    if (!s.empty()) {
+      if (s.top() == s2.top()) s2.pop();
+      int save = s.top();
+      s.pop();
+      return save;
+    }
     return 0;
   }
   void Push(int x) {
-    // TODO - you fill in here.
-    return;
+    if ((!s2.empty() && x >= s2.top()) || s2.empty()) {
+      s2.push(x);
+    }
+    s.push(x);
   }
 };
 struct StackOp {
