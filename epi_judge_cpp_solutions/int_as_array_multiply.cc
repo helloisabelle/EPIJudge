@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <cstdlib>
 #include <vector>
 
 #include "test_framework/generic_test.h"
@@ -24,7 +23,7 @@ vector<int> Multiply(vector<int> num1, vector<int> num2) {
   result = {
       find_if_not(begin(result), end(result), [](int a) { return a == 0; }),
       end(result)};
-  if (empty(result)) {
+  if (result.empty()) {
     return {0};
   }
   result.front() *= sign;

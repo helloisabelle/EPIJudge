@@ -13,10 +13,10 @@ shared_ptr<ListNode<int>> ReverseSublist(shared_ptr<ListNode<int>> L, int start,
   // Reverses sublist.
   auto sublist_iter = sublist_head->next;
   while (start++ < finish) {
-    auto temp = sublist_iter->next;
-    sublist_iter->next = temp->next;
-    temp->next = sublist_head->next;
-    sublist_head->next = temp;
+    auto temp = sublist_iter->next; // set to next element
+    sublist_iter->next = temp->next; // save next element
+    temp->next = sublist_head->next; // sublist_head->next points at element before temp
+    sublist_head->next = temp; // temp goes to end of subarr
   }
   return dummy_head->next;
 }
