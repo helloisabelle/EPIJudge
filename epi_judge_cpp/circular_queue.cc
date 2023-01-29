@@ -1,20 +1,52 @@
 #include "test_framework/generic_test.h"
 #include "test_framework/serialization_traits.h"
 #include "test_framework/test_failure.h"
+#include <vector>
+#include <algorithm>
+#include <cmath>
+#include <iostream>
+
 class Queue {
+ private:
+  std::vector<int> v;
+  int tail = -1;
+  int head = 0;
+  int size = 0;
  public:
-  Queue(size_t capacity) {}
+  Queue(size_t capacity) {
+    for (int i = 0; i < capacity; ++i) v.emplace_back(0);
+  }
   void Enqueue(int x) {
-    // TODO - you fill in here.
+    if (tail == -1) tail = 0;
+    else if (v.size() == size) {
+        std::vector<int> n;
+        std::rotate(v.begin(), v.begin() + head, v.end());
+        tail = v.size();
+        v.emplace_back(0);
+        head = 0;
+    } else if (tail == v.size() - 1 ) tail = 0;
+    else tail++;
+
+    v[tail] = x;
+    size++;
     return;
   }
+
   int Dequeue() {
-    // TODO - you fill in here.
-    return 0;
+    int save = v[head];
+    v[head] = 0;
+    if (tail == head) {
+      tail = -1;
+      head = 0;
+    } else if (head == v.size() - 1) head = 0;
+    else if (tail != head) head++;
+
+    size--;
+    return save;
   }
+
   int Size() const {
-    // TODO - you fill in here.
-    return 0;
+    return size;
   }
 };
 struct QueueOp {

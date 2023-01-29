@@ -6,10 +6,18 @@
 using std::unique_ptr;
 using std::vector;
 
-vector<vector<int>> BinaryTreeDepthOrder(
-    const unique_ptr<BinaryTreeNode<int>>& tree) {
-  // TODO - you fill in here.
-  return {};
+void traverse(const unique_ptr<BinaryTreeNode<int>>& tree, int depth, vector<vector<int>>& ans) {
+  if (tree == nullptr) return;
+  if (ans.size() <= depth) ans.push_back({});
+  ans[depth].emplace_back(tree->data);
+  traverse(tree->left, depth + 1, ans);
+  traverse(tree->right, depth + 1, ans);
+}
+
+vector<vector<int>> BinaryTreeDepthOrder(const unique_ptr<BinaryTreeNode<int>>& tree) {
+  vector<vector<int>> ans;
+  traverse(tree, 0, ans);
+  return ans;
 }
 
 int main(int argc, char* argv[]) {
