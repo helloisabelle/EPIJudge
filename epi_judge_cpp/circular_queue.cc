@@ -24,8 +24,7 @@ class Queue {
         tail = v.size();
         v.emplace_back(0);
         head = 0;
-    } else if (tail == v.size() - 1 ) tail = 0;
-    else tail++;
+    } else tail = (tail + 1) % v.size();
 
     v[tail] = x;
     size++;
@@ -38,8 +37,7 @@ class Queue {
     if (tail == head) {
       tail = -1;
       head = 0;
-    } else if (head == v.size() - 1) head = 0;
-    else if (tail != head) head++;
+    } else head = (head + 1) % v.size();
 
     size--;
     return save;
