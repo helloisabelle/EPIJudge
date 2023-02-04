@@ -3,12 +3,39 @@
 #include "test_framework/generic_test.h"
 #include "test_framework/test_failure.h"
 #include "test_framework/timed_executor.h"
+#include <unordered_map>
+#include <iostream>
+
+int getDepth(BinaryTreeNode<int>* node0, int depth) {
+  if (!node0) return depth;
+  else return getDepth(node0->parent, depth + 1);
+}
 
 BinaryTreeNode<int>* Lca(const unique_ptr<BinaryTreeNode<int>>& node0,
                          const unique_ptr<BinaryTreeNode<int>>& node1) {
-  // TODO - you fill in here.
-  return nullptr;
+
+  BinaryTreeNode<int>* curr0 = node0.get();
+  BinaryTreeNode<int>* curr1 = node1.get();
+
+  int x = getDepth(curr0, 0);
+  int y = getDepth(curr1, 0);
+
+  if (x > y) {
+    while (x-- != y) curr0 = curr0->parent;
+  } else if (y > x) {
+    while (y-- != x) curr1 = curr1->parent;
+  }
+
+  while (curr0 && curr1) {
+    if (curr0 == curr1) return curr0;
+    curr0 = curr0->parent;
+    curr1 = curr1->parent;
+  }
+
+  return node0.get();
 }
+
+
 int LcaWrapper(TimedExecutor& executor,
                const unique_ptr<BinaryTreeNode<int>>& tree, int key0,
                int key1) {

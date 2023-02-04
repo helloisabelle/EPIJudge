@@ -5,8 +5,30 @@
 using std::vector;
 
 vector<int> InorderTraversal(const unique_ptr<BinaryTreeNode<int>>& tree) {
-  // TODO - you fill in here.
-  return {};
+  BinaryTreeNode<int>* curr = tree.get(), *prev = nullptr, *next = nullptr;
+  vector<int> ans;
+  while (curr) {
+    if (curr->parent == prev) {
+      // could be right or left
+      if (curr->left) next = curr->left.get();
+      else {
+        ans.emplace_back(curr->data);
+        next = curr->right.get() ? curr->right.get() : curr->parent;
+      }
+
+    } else if (curr->left.get() == prev){
+      // curr is the root
+      ans.emplace_back(curr->data);
+      if (curr->right) next = curr->right.get();
+      else next = curr->parent;
+    } else if (curr->right.get() == prev){
+      // finished this subtree
+      next = curr->parent;
+    }
+    prev = curr;
+    curr = next;
+  }
+  return ans;
 }
 
 int main(int argc, char* argv[]) {
