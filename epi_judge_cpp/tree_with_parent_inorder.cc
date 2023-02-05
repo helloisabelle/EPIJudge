@@ -9,7 +9,8 @@ vector<int> InorderTraversal(const unique_ptr<BinaryTreeNode<int>>& tree) {
   vector<int> ans;
   while (curr) {
     if (curr->parent == prev) {
-      // could be right or left
+      // we just finished root
+      // curr is the right
       if (curr->left) next = curr->left.get();
       else {
         ans.emplace_back(curr->data);
@@ -17,11 +18,13 @@ vector<int> InorderTraversal(const unique_ptr<BinaryTreeNode<int>>& tree) {
       }
 
     } else if (curr->left.get() == prev){
+      // we just finished left
       // curr is the root
       ans.emplace_back(curr->data);
       if (curr->right) next = curr->right.get();
       else next = curr->parent;
     } else if (curr->right.get() == prev){
+      // we just finished right
       // finished this subtree
       next = curr->parent;
     }
