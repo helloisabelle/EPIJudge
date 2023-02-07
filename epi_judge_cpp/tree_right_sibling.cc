@@ -32,6 +32,8 @@ void ConstructRightSiblingHelper2(BinaryTreeNode<int>* node) {
 
     // set curr's right child to curr's next left child
     if (node->next) node->right->next = node->next->left.get();
+
+    // go along the nodes in this level
     node = node->next;
   }
 }
