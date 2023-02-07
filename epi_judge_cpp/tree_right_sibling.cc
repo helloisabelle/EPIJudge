@@ -15,10 +15,37 @@ struct BinaryTreeNode {
   explicit BinaryTreeNode(T data) : data(data){};
 };
 
-void ConstructRightSibling(BinaryTreeNode<int>* tree) {
-  // TODO - you fill in here.
+void ConstructRightSiblingHelper(BinaryTreeNode<int>* left, BinaryTreeNode<int>* right) {
+  if (!left) return;
+  else {
+    left->next = right;
+    ConstructRightSiblingHelper(left->left.get(), left->right.get());
+    ConstructRightSiblingHelper(left->right.get(), right->left.get());
+    ConstructRightSiblingHelper(right->left.get(), right->right.get());
+  }
   return;
 }
+
+void ConstructRightSiblingHelper2(BinaryTreeNode<int>* node) {
+  while (node) {
+    node->left->next = node->right.get();
+
+    // set curr's right child to curr's next left child
+    if (node->next) node->right->next = node->next->left.get();
+    node = node->next;
+  }
+}
+
+void ConstructRightSibling(BinaryTreeNode<int>* tree) {
+//  if (!tree) return;
+//  ConstructRightSiblingHelper(tree->left.get(), tree->right.get());
+  while (tree && tree->left) {
+    ConstructRightSiblingHelper2(tree);
+    tree = tree->left.get();
+  }
+  return;
+}
+
 namespace test_framework {
 template <>
 struct SerializationTrait<unique_ptr<BinaryTreeNode<int>>>
