@@ -16,9 +16,10 @@ vector<int> SortApproximatelySortedData(
   }
 
   while (it != sequence_end) {
+    pq.push(*it++);
     ans.emplace_back(pq.top());
     pq.pop();
-    pq.push(*it++);
+    //pq.push(*it++);
   }
 
   while (!empty(pq)) {

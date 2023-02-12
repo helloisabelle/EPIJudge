@@ -1,11 +1,27 @@
 #include <vector>
+#include <iostream>
+#include <climits>
 
 #include "test_framework/generic_test.h"
 using std::vector;
 
 int SearchSmallest(const vector<int>& A) {
-  // TODO - you fill in here.
-  return 0;
+  int l = 0, r = A.size() - 1, ans = A.size(), min = INT_MAX;
+
+  while (l <= r) {
+    int m = l + (r - l)/2;
+    if (A[m] > A[r]) {
+      l = m + 1;
+    } else {
+      if (A[m] < min) {
+        min = A[m];
+        ans = m;
+      }
+      r = m - 1;
+    }
+  }
+
+  return ans;
 }
 
 int main(int argc, char* argv[]) {

@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cmath>
 #include <vector>
+#include <queue>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/serialization_traits.h"
@@ -20,8 +21,29 @@ struct Star {
 vector<Star> FindClosestKStars(vector<Star>::const_iterator stars_begin,
                                const vector<Star>::const_iterator& stars_end,
                                int k) {
-  // TODO - you fill in here.
-  return {};
+  std::priority_queue<Star> pq;
+  vector<Star> ans;
+  auto it = stars_begin;
+
+  for (int i = 0; i < k; i++) {
+    pq.push(*it);
+    it++;
+  }
+
+  while (it != stars_end) {
+    if (*it < pq.top()) {
+      pq.pop();
+      pq.push(*it);
+    }
+    it++;
+  }
+
+  while (!empty(pq)) {
+    ans.emplace_back(pq.top());
+    pq.pop();
+  }
+
+  return ans;
 }
 
 namespace test_framework {
