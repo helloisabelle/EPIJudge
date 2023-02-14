@@ -1,8 +1,18 @@
 #include "test_framework/generic_test.h"
+#include <iostream>
+#include <climits>
 
 int SquareRoot(int k) {
-  // TODO - you fill in here.
-  return 0;
+  int l = 0, r = k;
+  while (l <= r) {
+    int m = l + (r - l)/2;
+    if (m > 0 && (m > INT_MAX/m || m * m > k))
+      r = m - 1;
+    else if (m * m <= k)
+      l = m + 1;
+  }
+
+  return l - 1;
 }
 
 int main(int argc, char* argv[]) {
