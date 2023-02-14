@@ -1,11 +1,48 @@
 #include <vector>
-
+#include <iostream>
 #include "test_framework/generic_test.h"
 using std::vector;
 
 bool MatrixSearch(const vector<vector<int>>& A, int x) {
-  // TODO - you fill in here.
-  return true;
+  if (A.size() == 0) return false;
+  int row = 0;
+  int col = A[0].size() - 1;
+
+  while (row < A.size() && col >= 0) {
+    if (A[row][col] == x) return true;
+    else if (A[row][col] < x) row++;
+    else col--;
+  }
+  return false;
+
+//  int l = 0, r = A[0].size() - 1, col = -1;
+//
+//  while (l <= r) {
+//    int m = l + (r - l)/2;
+//    if (A[0][m] == x) {
+//      return true;
+//    }
+//    else if (A[0][m] < x) {
+//      if (A[0][m] > col) col = m;
+//      l = m + 1;
+//    } else {
+//      r = m - 1;
+//    }
+//  }
+//
+//  for (int i = 0; i <= col; i++) {
+//    int l = 0, r = A.size() - 1, row = -1;
+//    while (l <= r) {
+//      int m = l + (r - l)/2;
+//      if (A[m][i] == x) {
+//        return true;
+//      }
+//      else if (A[m][i] < x) l = m + 1;
+//      else r = m - 1;
+//    }
+//  }
+
+  return false;
 }
 
 int main(int argc, char* argv[]) {
