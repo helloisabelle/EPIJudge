@@ -1,13 +1,22 @@
 #include <vector>
-
+#include <queue>
+#include <iostream>
 #include "test_framework/generic_test.h"
 using std::vector;
 
 int FindKthLargestUnknownLength(vector<int>::const_iterator stream_begin,
                                 const vector<int>::const_iterator& stream_end,
                                 int k) {
-  // TODO - you fill in here.
-  return 0;
+  std::priority_queue<int, vector<int>, std::greater<int> > pq;
+
+  auto it = stream_begin;
+  while (it != stream_end) {
+    pq.push(*it);
+    if (pq.size() == k + 1) pq.pop();
+    it++;
+  }
+
+  return pq.top();
 }
 int FindKthLargestUnknownLengthWrapper(const vector<int>& stream, int k) {
   return FindKthLargestUnknownLength(stream.cbegin(), stream.cend(), k);

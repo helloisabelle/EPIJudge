@@ -1,4 +1,6 @@
 #include <vector>
+#include <algorithm>
+#include <iostream>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/serialization_traits.h"
@@ -9,8 +11,35 @@ struct DuplicateAndMissing {
 };
 
 DuplicateAndMissing FindDuplicateMissing(const vector<int>& A) {
-  // TODO - you fill in here.
-  return {0, 0};
+//  int dup = 0, missing = -1;
+//  vector<int> copy(A);
+//  std::sort(copy.begin(), copy.end());
+//  int prev = -1, count = 0;
+//
+//  for (int i = 0; i < copy.size(); i++) {
+//    if (copy[i] == count) count++;
+//    if (copy[i] == prev) dup = copy[i];
+//    prev = copy[i];
+//  }
+
+  int first_xor = 0;
+
+  for (int i = 0; i < A.size(); i++) {
+    first_xor ^= A[i] ^ i;
+  }
+
+  int low = first_xor & ~(first_xor - 1);
+  int second_xor = 0;
+  
+  for (int i = 0; i < A.size(); i++) {
+    if (A[i] & low) second_xor ^= A[i];
+    if (i & low) second_xor ^= i;
+  }
+
+  for (auto x : A)
+    if (x == second_xor) return {second_xor, second_xor ^ first_xor};
+
+  return {second_xor ^ first_xor, second_xor};
 }
 
 namespace test_framework {

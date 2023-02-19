@@ -1,5 +1,7 @@
 #include <stdexcept>
 #include <vector>
+#include <bitset>
+
 
 #include "test_framework/generic_test.h"
 #include "test_framework/test_failure.h"
@@ -8,7 +10,38 @@ using std::vector;
 
 int FindMissingElement(vector<int>::const_iterator stream_begin,
                        const vector<int>::const_iterator& stream_end) {
-  // TODO - you fill in here.
+  const int capacity = 1 << 16;
+  int upper_bucket = 0;
+  std::vector<size_t> candidates_upper(capacity, 0);
+  std::bitset<capacity> candidates_lower;
+
+  auto copy = stream_begin;
+  while (copy != stream_end) {
+    int upper = *copy >> 16;
+    candidates_upper[upper]++;
+    copy++;
+  }
+
+  for (int i = 0; i < capacity; i++) {
+    if (candidates_upper[i] < capacity) {
+      upper_bucket = i;
+      break;
+    }
+  }
+
+  copy = stream_begin;
+  while (copy != stream_end) {
+    if (*copy >> 16 == upper_bucket) {
+      int lower = *copy << 16;
+      lower = lower >> 16;
+      candidates_lower.set(lower);
+    }
+    copy++;
+  }
+
+  for (int i = 0; i < capacity; i++) {
+    if (candidates_lower[i] == 0) return (i | upper_bucket);
+  }
   return 0;
 }
 void FindMissingElementWrapper(const vector<int>& stream) {

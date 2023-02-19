@@ -1,4 +1,6 @@
 #include <vector>
+#include <climits>
+#include <cmath>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/serialization_traits.h"
@@ -8,8 +10,13 @@ struct MinMax {
 };
 
 MinMax FindMinMax(const vector<int>& A) {
-  // TODO - you fill in here.
-  return {0, 0};
+  int min = A[0], max = A[0];
+  for (auto x : A) {
+    if (x > max) max = x;
+    else if (x < min) min = x;
+  }
+
+  return {min, max};
 }
 namespace test_framework {
 template <>
