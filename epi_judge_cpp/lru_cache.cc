@@ -1,23 +1,65 @@
 #include <vector>
-
+#include <unordered_map>
+#include <algorithm>
+#include <iostream>
+#include <utility>
+#include <list>
 #include "test_framework/generic_test.h"
 #include "test_framework/serialization_traits.h"
 #include "test_framework/test_failure.h"
 
 class LruCache {
+ private:
+  std::unordered_map<int, std::pair<std::list<int>::iterator, int> > map;
+  std::list<int> l;
+  size_t lru_capacity;
+  size_t size;
  public:
-  LruCache(size_t capacity) {}
+  LruCache(size_t capacity) {
+    lru_capacity = capacity;
+    size = 0;
+  }
   int Lookup(int isbn) {
-    // TODO - you fill in here.
-    return 0;
+    auto it = map.find(isbn);
+    if (it == map.end()) return -1;
+    else {
+      l.erase(it->second.first);
+      l.emplace_back(isbn);
+      auto l_it = l.end();
+      --l_it;
+      it->second.first = l_it;
+      return map.find(isbn)->second.second;
+    }
   }
   void Insert(int isbn, int price) {
-    // TODO - you fill in here.
+    if (size == lru_capacity && map.find(isbn) == map.end()) {
+      Erase(l.front());
+    }
+    auto it = map.find(isbn);
+    if (it == map.end()) {
+      l.emplace_back(isbn);
+      auto l_it = l.end();
+      --l_it;
+      map[isbn] = std::make_pair(l_it, price);
+      ++size;
+    }
+    else {
+      l.erase(it->second.first);
+      l.emplace_back(isbn);
+      auto l_it = l.end();
+      --l_it;
+      it->second.first = l_it;
+    }
     return;
   }
   bool Erase(int isbn) {
-    // TODO - you fill in here.
-    return true;
+    auto it = map.find(isbn);
+    if (it != map.end()) {
+      l.erase(it->second.first);
+      map.erase(isbn);
+      --size;
+      return true;
+    } else return false;
   }
 };
 struct Op {
