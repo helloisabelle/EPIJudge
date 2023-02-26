@@ -30,7 +30,7 @@ Subarray FindSmallestSubarrayCoveringSet(
     while (i != size(paragraph)) {
       string s = *it++;
       if (map.find(s) != map.end()) {
-        if (map[s] != loc.end()) loc.erase(map[s]);
+        if (map[s] == loc.end()) loc.erase(map[s]);
 
         loc.emplace_back(i);
         map[s] = --loc.end();
