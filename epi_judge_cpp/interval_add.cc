@@ -1,4 +1,6 @@
 #include <vector>
+#include <iostream>
+#include <cmath>
 
 #include "test_framework/fmt_print.h"
 #include "test_framework/generic_test.h"
@@ -11,8 +13,34 @@ struct Interval {
 
 vector<Interval> AddInterval(const vector<Interval>& disjoint_intervals,
                              Interval new_interval) {
-  // TODO - you fill in here.
-  return {};
+  vector<Interval> copy(disjoint_intervals);
+  std::sort(copy.begin(), copy.end(), [](const Interval& a, const Interval& b) {
+    return a.left < b.left;
+  });
+  int begin = 0; int end = -1;
+  int erase_start = -1, erase_end = -1;
+  int index = -1;
+
+  for (int i = 0; i < copy.size(); i++) {
+    // if new_interval overlaps
+    if (new_interval.right >= copy[i].left && new_interval.left <= copy[i].right) {
+    //if (!(new_interval.right < copy[i].left) && !(new_interval.left > copy[i].right)) {
+      if (erase_start == -1) {
+        erase_start = i;
+        begin = std::min(new_interval.left, copy[i].left);
+      }
+      erase_end = i;
+      end = std::max(new_interval.right, copy[i].right);
+    } else if (new_interval.right < copy[i].left && index == -1) index = i;
+  }
+
+  if (erase_start + erase_end >= 0) {
+    copy.erase(copy.begin() + erase_start, copy.begin() + erase_end + 1);
+    copy.insert(copy.begin() + erase_start, Interval{begin, end});
+  } else if (index == -1) copy.emplace_back(new_interval);
+  else copy.insert(copy.begin() + index, new_interval);
+
+  return copy;
 }
 namespace test_framework {
 template <>

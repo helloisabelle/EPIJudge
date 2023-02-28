@@ -1,46 +1,34 @@
 #include <vector>
-#include <unordered_map>
+#include <unordered_set>
 #include <iostream>
 #include "test_framework/generic_test.h"
 using std::vector;
 
 int LongestContainedRange(const vector<int>& A) {
-  std::map<int, int> map;
+  std::unordered_set<int> set;
   int ans = 1;
-  for (auto x : A) map[x]++;
+  for (auto x : A) set.emplace(x);
 
-  while (!empty(map)) {
-    auto val = map.begin()->first;
-    map.erase(val);
+  while (!empty(set)) {
+    auto val = *set.begin();
+    set.erase(val);
     int count = 1;
 
     int i = val + 1;
-    while (!empty(map)) {
-        if (map.count(i)) {
-          ++count;
-          map.erase(i);
-        } else break;
+    while (set.count(i)) {
+        ++count;
+        set.erase(i);
         i++;
     }
 
     i = val - 1;
-    while (!empty(map)) {
-        if (map.count(i)) {
-          ++count;
-          map.erase(i);
-        } else break;
+    while (set.count(i)) {
+        ++count;
+        set.erase(i);
         i--;
     }
     if (count > ans) ans = count;
   }
-
-//  int prev = map.begin()->first - 1;
-//  for (auto x : map) {
-//    if (x.first == prev + 1) {
-//      if (++count > ans) ans = count;
-//    } else count = 1;
-//    prev = x.first;
-//  }
 
   return ans;
 }

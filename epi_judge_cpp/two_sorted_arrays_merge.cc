@@ -4,7 +4,19 @@
 using std::vector;
 
 void MergeTwoSortedArrays(vector<int>& A, int m, const vector<int>& B, int n) {
-  // TODO - you fill in here.
+  int back = m + n - 1;
+  int i = m - 1, j = n - 1;
+  while (i >= 0 && j >= 0) {
+    if (A[i] >= B[j]) {
+      A[back--] = A[i--];
+    } else {
+      A[back--] = B[j--];
+    }
+  }
+  while (j >= 0) {
+    A[back--] = B[j--];
+  }
+
   return;
 }
 vector<int> MergeTwoSortedArraysWrapper(vector<int> A, int m,

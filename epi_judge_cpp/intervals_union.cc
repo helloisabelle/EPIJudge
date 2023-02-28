@@ -1,4 +1,6 @@
 #include <vector>
+#include <cmath>
+#include <iostream>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/serialization_traits.h"
@@ -15,8 +17,38 @@ struct Interval {
 };
 
 vector<Interval> UnionOfIntervals(vector<Interval> intervals) {
-  // TODO - you fill in here.
-  return {};
+  std::sort(intervals.begin(), intervals.end(), [](const Interval& a, const Interval& b) {
+    return a.left.val == b.left.val ? a.left.is_closed && !b.left.is_closed : a.left.val < b.left.val;
+  });
+  Interval curr = intervals[0];
+  vector<Interval> ans;
+  for (int i = 1; i < intervals.size(); i++) {
+    if (curr.right.val >= intervals[i].left.val && curr.left.val <= intervals[i].right.val) {
+      if (
+        (curr.right.val == intervals[i].left.val && !curr.right.is_closed && !intervals[i].left.is_closed) ||
+        (curr.left.val == intervals[i].right.val && !curr.left.is_closed && !intervals[i].right.is_closed)
+      ) {
+        ans.emplace_back(curr);
+        curr = intervals[i];
+      } else {
+        if (curr.left.val == intervals[i].left.val) {
+          if (curr.left.is_closed || intervals[i].left.is_closed) curr.left.is_closed = true;
+          else curr.left.is_closed = false;
+        } else if (curr.left.val > intervals[i].left.val) curr.left = intervals[i].left;
+
+        if (curr.right.val == intervals[i].right.val) {
+          if (curr.right.is_closed || intervals[i].right.is_closed) curr.right.is_closed = true;
+          else curr.right.is_closed = false;
+        } else if (curr.right.val < intervals[i].right.val) curr.right = intervals[i].right;
+      }
+    } else if (curr.right.val < intervals[i].left.val) {
+      ans.emplace_back(curr);
+      curr = intervals[i];
+    }
+  }
+
+  ans.emplace_back(curr);
+  return ans;
 }
 struct FlatInterval {
   int left_val;

@@ -2,6 +2,9 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <unordered_map>
+#include <iostream>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/serialization_traits.h"
@@ -16,7 +19,37 @@ struct Person {
 };
 
 void GroupByAge(vector<Person>* people) {
-  // TODO - you fill in here.
+  std::vector<Person>& p = *people;
+  std::unordered_map<int, int> count, index;
+
+  std::vector<int> visited(p.size(), 0);
+
+  for (int i = 0; i < p.size(); ++i) ++count[p[i].age];
+  int i = 0;
+  for (auto x : count) {
+    index[x.first] = i;
+    i += x.second;
+  }
+
+//  int j = 0;
+//  while (j < p.size()) {
+//    while (!visited[j]) {
+//      int save = p[j].age;
+//      std::swap(p[j], p[index[p[j].age]]);
+//      ++visited[index[save]];
+//      ++index[save];
+//    }
+//    ++j;
+//  }
+
+  while (!empty(index)) {
+    auto curr = begin(index);
+    auto move = index.find(p[curr->second].age);
+    std::swap(p[curr->second], p[move->second]);
+    if (--count[move->first] > 0) ++move->second;
+    // we filled this sub arr
+    else index.erase(move);
+  }
   return;
 }
 
