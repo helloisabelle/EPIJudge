@@ -2,6 +2,7 @@
 #include <stack>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/test_failure.h"
@@ -10,9 +11,25 @@ using std::array;
 using std::stack;
 using std::vector;
 const int kNumPegs = 3;
+
+void helper(vector<vector<int>>& ans, int num_rings, int first, int second, int third) {
+  if (num_rings == 2) {
+    ans.emplace_back(std::vector<int>{first, third});
+    ans.emplace_back(std::vector<int>{first, second});
+    ans.emplace_back(std::vector<int>{third, second});
+    return;
+  }
+
+  helper(ans, num_rings - 1, first, third, second);
+  ans.emplace_back(std::vector<int>{first, second});
+  helper(ans, num_rings - 1, third, second, first);
+}
+
 vector<vector<int>> ComputeTowerHanoi(int num_rings) {
-  // TODO - you fill in here.
-  return {};
+  vector<vector<int>> ans;
+  if (num_rings == 1) return {{0, 1}};
+  helper(ans, num_rings, 0, 1, 2);
+  return ans;
 }
 void ComputeTowerHanoiWrapper(TimedExecutor& executor, int num_rings) {
   array<stack<int>, kNumPegs> pegs;
