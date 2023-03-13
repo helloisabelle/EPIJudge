@@ -10,6 +10,7 @@ bool IsValid(const vector<int>& col) {
   int new_queen_idx = size(col) - 1;
   for (int i = 0; i < new_queen_idx; ++i) {
     // difference between queen here and most recently placed queen
+    //diff between cols == diff between rows
     int diff = std::abs(col[i] - col[new_queen_idx]);
     // on same column or on diagonal
     if (diff == 0 || diff == new_queen_idx - i) return false;
