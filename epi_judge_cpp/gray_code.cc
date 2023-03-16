@@ -1,15 +1,45 @@
 #include <algorithm>
 #include <vector>
+#include <cmath>
+#include <unordered_set>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/test_failure.h"
 #include "test_framework/timed_executor.h"
 using std::vector;
 
-vector<int> GrayCode(int num_bits) {
-  // TODO - you fill in here.
-  return {};
+bool isValid(int x, int y) {
+  int val = x ^ y;
+  return val && !(val & (val - 1));
 }
+
+bool GrayCodeHelper(vector<int>& ans, int num_bits, std::unordered_set<int>& history) {
+  if ((1 << num_bits) == size(ans)) {
+    return isValid(ans.back(), ans.front());
+  }
+
+  for (int i = 0; i < num_bits; ++i) {
+    int prev = ans.back();
+    int next = prev ^ (1 << i);
+    if (!history.count(next)) {
+      history.emplace(next);
+      ans.emplace_back(next);
+      if (GrayCodeHelper(ans, num_bits, history)) return true;
+      ans.pop_back();
+      history.erase(next);
+    }
+  }
+
+  return false;
+}
+
+vector<int> GrayCode(int num_bits) {
+  vector<int> ans = {0};
+  std::unordered_set<int> s = {0};
+  GrayCodeHelper(ans, num_bits, s);
+  return ans;
+}
+
 bool DiffersByOneBit(int x, int y) {
   int bit_difference = x ^ y;
   return bit_difference && !(bit_difference & (bit_difference - 1));
