@@ -7,8 +7,19 @@ using std::vector;
 
 string MajoritySearch(vector<string>::const_iterator stream_begin,
                       const vector<string>::const_iterator stream_end) {
-  // TODO - you fill in here.
-  return "";
+  int count = 0;
+  string ans = *stream_begin;
+  while (stream_begin != stream_end) {
+    if (*stream_begin == ans) ++count;
+    else --count;
+    ++stream_begin;
+    // if element a = b, set to next item.
+
+    aaaabbbbc                                                                                                                                           b
+
+    if (!count) ans = *stream_begin;
+  }
+  return ans;
 }
 string MajoritySearchWrapper(const vector<string>& stream) {
   return MajoritySearch(cbegin(stream), cend(stream));

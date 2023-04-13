@@ -65,7 +65,6 @@ vector<string> DecomposeIntoDictionaryWords(
     }
   }
 
-
   return {ans.rbegin(), ans.rend()};
 }
 void DecomposeIntoDictionaryWordsWrapper(

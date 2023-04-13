@@ -4,14 +4,54 @@
 #include "test_framework/generic_test.h"
 #include "test_framework/test_failure.h"
 #include "test_framework/timed_executor.h"
+#include <climits>
 using std::vector;
 const int kMPG = 20;
 
 // gallons[i] is the amount of gas in city i, and distances[i] is the distance
 // city i to the next city.
 int FindAmpleCity(const vector<int>& gallons, const vector<int>& distances) {
-  // TODO - you fill in here.
-  return 0;
+  vector<int> c_gallons(gallons), c_distances(distances);
+
+//  vector<int> candidates;
+//  for (int i = 0; i < size(c_gallons); i++) {
+//    if (gallons[i] >= (distances[i]/20)) candidates.emplace_back(i);
+//  }
+
+  int ans = 0, curr_gas = 0, min_gas = INT_MAX;
+
+  for (int i = 0; i < size(gallons); i++) {
+
+    if (curr_gas < min_gas) {
+      min_gas = curr_gas;
+      ans = i;
+    }
+    curr_gas -= distances[i]/20;
+    curr_gas += gallons[i];
+//    if ()
+//    if (gallons[i] >= (distances[i]/20)) candidates.emplace_back(i);
+  }
+
+//  for (int i = 0; i < size(candidates); i++) {
+//    std::rotate(c_gallons.begin(), c_gallons.begin() + candidates[i], c_gallons.end());
+//    std::rotate(c_distances.begin(), c_distances.begin() + candidates[i], c_distances.end());
+//    int curr = 0, flag = 0;
+//    for (int j = 0; j < size(c_gallons); j++) {
+//      curr += c_gallons[j];
+//      curr -= (c_distances[j]/20);
+//      if (curr < 0) {
+//        flag++;
+//        break;
+//      }
+//    }
+//    if (flag == 0) {
+//      return candidates[i];
+//    }
+//    std::rotate(c_gallons.begin(), c_gallons.begin() + c_gallons.size() - candidates[i], c_gallons.end());
+//    std::rotate(c_distances.begin(), c_distances.begin() + c_distances.size() - candidates[i], c_distances.end());
+//  }
+
+  return ans;
 }
 void FindAmpleCityWrapper(TimedExecutor& executor, const vector<int>& gallons,
                           const vector<int>& distances) {
