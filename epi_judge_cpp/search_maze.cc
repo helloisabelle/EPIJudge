@@ -1,6 +1,8 @@
 #include <istream>
 #include <string>
 #include <vector>
+#include <queue>
+#include <unordered_set>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/serialization_traits.h"
@@ -15,10 +17,167 @@ struct Coordinate {
 
   int x, y;
 };
+
+struct hash_fn
+{
+   std::size_t operator() (const Coordinate &node) const
+   {
+       std::size_t h1 = std::hash<int>()(node.x);
+       std::size_t h2 = std::hash<int>()(node.y);
+
+       return h1 ^ h2;
+   }
+};
+
+struct Obj {
+  Coordinate c;
+  vector<Coordinate> path;
+};
+
+vector<Coordinate> BFS(vector<vector<Color>> maze, const Coordinate& e, std::unordered_set<Coordinate, hash_fn>& visited, std::queue<Obj> q) {
+  while (!q.empty()) {
+    Obj o = q.front();
+    Coordinate c = o.c;
+    q.pop();
+    if (c == e) return o.path;
+    if (visited.count(c)) continue;
+    visited.emplace(c);
+    if (c.x + 1 < maze.size() && maze[c.x + 1][c.y] == Color::kWhite) {
+      Coordinate d{c.x + 1, c.y};
+      vector<Coordinate> n(o.path);
+      n.emplace_back(d);
+      q.emplace(Obj{d, n});
+    }
+
+    if (c.y + 1 < maze[0].size() && maze[c.x][c.y + 1] == Color::kWhite) {
+      Coordinate d{c.x, c.y + 1};
+      vector<Coordinate> n(o.path);
+      n.emplace_back(d);
+      q.emplace(Obj{d, n});
+    }
+
+    if (c.x - 1 >= 0 && maze[c.x - 1][c.y] == Color::kWhite) {
+      Coordinate d{c.x - 1, c.y};
+      vector<Coordinate> n(o.path);
+      n.emplace_back(d);
+      q.emplace(Obj{d, n});
+    }
+
+    if (c.y - 1 >= 0 && maze[c.x][c.y - 1] == Color::kWhite) {
+      Coordinate d{c.x, c.y - 1};
+      vector<Coordinate> n(o.path);
+      n.emplace_back(d);
+      q.emplace(Obj{d, n});
+    }
+  }
+
+  return {};
+}
+
+bool DFS(vector<vector<Color>> maze, const Coordinate& c,
+                              const Coordinate& e, vector<Coordinate>& path, std::unordered_set<Coordinate, hash_fn>& visited) {
+  if (c == e) return true;
+  if (visited.count(c)) return false;
+  visited.emplace(c);
+  if (c.x + 1 < maze.size() && maze[c.x + 1][c.y] == Color::kWhite) {
+    Coordinate d{c.x + 1, c.y};
+    path.emplace_back(d);
+    if (DFS(maze, d, e, path, visited)) return true;
+    path.pop_back();
+  }
+
+  if (c.y + 1 < maze[0].size() && maze[c.x][c.y + 1] == Color::kWhite) {
+    Coordinate d{c.x, c.y + 1};
+    path.emplace_back(d);
+    if (DFS(maze, d, e, path, visited)) return true;
+    path.pop_back();
+  }
+
+  if (c.x - 1 >= 0 && maze[c.x - 1][c.y] == Color::kWhite) {
+    Coordinate d{c.x - 1, c.y};
+    path.emplace_back(d);
+    if (DFS(maze, d, e, path, visited)) return true;
+    path.pop_back();
+  }
+
+  if (c.y - 1 >= 0 && maze[c.x][c.y - 1] == Color::kWhite) {
+    Coordinate d{c.x, c.y - 1};
+    path.emplace_back(d);
+    if (DFS(maze, d, e, path, visited)) return true;
+    path.pop_back();
+  }
+  return false;
+}
+
+bool DFS3(vector<vector<Color>>& maze, const Coordinate& c,
+                              const Coordinate& e, vector<Coordinate>& path) {
+  if ((c.x < 0 || c.x >= maze.size() || c.y < 0 || c.y >= maze[0].size()) || maze[c.x][c.y] == Color::kBlack) return false;
+  path.emplace_back(c);
+  maze[c.x][c.y] = Color::kBlack;
+  if (c == e) return true;
+
+  if (DFS3(maze, Coordinate{c.x + 1, c.y}, e, path)) return true;
+  if (DFS3(maze, Coordinate{c.x - 1, c.y}, e, path)) return true;
+  if (DFS3(maze, Coordinate{c.x, c.y + 1}, e, path)) return true;
+  if (DFS3(maze, Coordinate{c.x, c.y - 1}, e, path)) return true;
+
+  path.pop_back();
+  return false;
+}
+
+bool DFS2(vector<vector<Color>>& maze, const Coordinate& c,
+                              const Coordinate& e, vector<Coordinate>& path) {
+  if (c == e) return true;
+
+  if (c.x + 1 < maze.size() && maze[c.x + 1][c.y] == Color::kWhite) {
+    Coordinate d{c.x + 1, c.y};
+    path.emplace_back(d);
+    maze[d.x][d.y] = Color::kBlack;
+    if (DFS2(maze, d, e, path)) return true;
+    path.pop_back();
+  }
+
+  if (c.y + 1 < maze[0].size() && maze[c.x][c.y + 1] == Color::kWhite) {
+    Coordinate d{c.x, c.y + 1};
+    path.emplace_back(d);
+    maze[d.x][d.y] = Color::kBlack;
+    if (DFS2(maze, d, e, path)) return true;
+    path.pop_back();
+  }
+
+  if (c.x - 1 >= 0 && maze[c.x - 1][c.y] == Color::kWhite) {
+    Coordinate d{c.x - 1, c.y};
+    path.emplace_back(d);
+    maze[d.x][d.y] = Color::kBlack;
+    if (DFS2(maze, d, e, path)) return true;
+    path.pop_back();
+  }
+
+  if (c.y - 1 >= 0 && maze[c.x][c.y - 1] == Color::kWhite) {
+    Coordinate d{c.x, c.y - 1};
+    path.emplace_back(d);
+    maze[d.x][d.y] = Color::kBlack;
+    if (DFS2(maze, d, e, path)) return true;
+    path.pop_back();
+  }
+
+  return false;
+}
+
+
 vector<Coordinate> SearchMaze(vector<vector<Color>> maze, const Coordinate& s,
                               const Coordinate& e) {
-  // TODO - you fill in here.
-  return {};
+  vector<Coordinate> path = {s};
+  std::unordered_set<Coordinate, hash_fn> visited;
+  DFS2(maze, s, e, path);
+
+  if (path.back().x != e.x || path.back().y != e.y) {
+    return {};
+  }
+//  std::queue<Obj> q;
+//  q.emplace(Obj{s, {s}});
+//  return BFS(maze, e, visited, q);
+  return path;
 }
 
 namespace test_framework {

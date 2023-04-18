@@ -7,8 +7,63 @@
 using std::string;
 using std::vector;
 
+void explore(vector<vector<char>>* board_ptr, int i, int j) {
+  vector<vector<char>>&board = *board_ptr;
+  std::queue<std::pair<int, int>> q;
+  q.emplace(i, j);
+  char save = board[i][j];
+  while (!empty(q)) {
+    const auto [x, y] = q.front();
+    q.pop();
+    if ((x < 0 || x >= board.size() || y < 0 || y >= board[0].size()) || board[x][y] != save) continue;
+    board[x][y] = 'X';
+
+//    for (const auto& [next_x, next_y] : vector<std::pair<int, int>>{
+//             {x, y + 1}, {x, y - 1}, {x + 1, y}, {x - 1, y}}) {
+//      if (next_x >= 0 && next_x < size(board) && next_y >= 0 &&
+//          next_y < size(board[next_x]) && board[next_x][next_y] == save) {
+//        q.emplace(next_x, next_y);
+//      }
+//    }
+
+    q.emplace(x + 1, y);
+    q.emplace(x - 1, y);
+    q.emplace(x, y + 1);
+    q.emplace(x, y - 1);
+  }
+}
+
 void FillSurroundedRegions(vector<vector<char>>* board_ptr) {
-  // TODO - you fill in here.
+  vector<vector<char>>&board = *board_ptr;
+
+  for (int i = 0; i < size(board); i++) {
+    int j = 0;
+    if (board[i][j] == 'W') {
+      explore(board_ptr, i, j);
+    }
+    j = size(board[0]) - 1;
+    if (board[i][j] == 'W') {
+      explore(board_ptr, i, j);
+    }
+  }
+
+  for (int j = 0; j < size(board[0]); j++) {
+    int i = 0;
+    if (board[i][j] == 'W') {
+      explore(board_ptr, i, j);
+    }
+    i = size(board) - 1;
+    if (board[i][j] == 'W') {
+      explore(board_ptr, i, j);
+    }
+  }
+
+  for (int i = 0; i < size(board); i++) {
+    for (int j = 0; j < size(board[0]); j++) {
+      board[i][j] = board[i][j] != 'X' ? 'B' : 'W';
+    }
+  }
+
   return;
 }
 vector<vector<string>> FillSurroundedRegionsWrapper(
